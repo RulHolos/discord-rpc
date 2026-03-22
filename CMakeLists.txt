@@ -1,4 +1,4 @@
-cmake_minimum_required (VERSION 3.2.0)
+cmake_minimum_required (VERSION 4.0.0)
 project (DiscordRPC)
 
 include(GNUInstallDirs)
@@ -46,7 +46,7 @@ endif(NOT RAPIDJSONTEST)
 
 find_file(RAPIDJSON NAMES rapidjson rapidjson-1.1.0 PATHS ${CMAKE_CURRENT_SOURCE_DIR}/thirdparty CMAKE_FIND_ROOT_PATH_BOTH)
 
-add_library(rapidjson STATIC IMPORTED ${RAPIDJSON})
+add_library(rapidjson INTERFACE IMPORTED)
 
 # add subdirs
 
