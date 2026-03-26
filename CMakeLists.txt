@@ -32,25 +32,28 @@ execute_process(
     ERROR_QUIET
 )
 
-find_file(RAPIDJSONTEST NAMES rapidjson rapidjson-1.1.0 PATHS ${CMAKE_CURRENT_SOURCE_DIR}/thirdparty CMAKE_FIND_ROOT_PATH_BOTH)
-if (NOT RAPIDJSONTEST)
-    message("no rapidjson, download")
-    set(RJ_TAR_FILE ${CMAKE_CURRENT_SOURCE_DIR}/thirdparty/v1.1.0.tar.gz)
-    file(DOWNLOAD https://github.com/miloyip/rapidjson/archive/v1.1.0.tar.gz ${RJ_TAR_FILE})
-    execute_process(
-        COMMAND ${CMAKE_COMMAND} -E tar xzf ${RJ_TAR_FILE}
-        WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}/thirdparty
-    )
-    file(REMOVE ${RJ_TAR_FILE})
-endif(NOT RAPIDJSONTEST)
+include(FetchContent)
 
-find_file(RAPIDJSON NAMES rapidjson rapidjson-1.1.0 PATHS ${CMAKE_CURRENT_SOURCE_DIR}/thirdparty CMAKE_FIND_ROOT_PATH_BOTH)
+FetchContent_Declare(
+    rapidjson
+    GIT_REPOSITORY https://github.com/Tencent/rapidjson.git
+    GIT_TAG v1.1.0
+)
 
-add_library(rapidjson INTERFACE IMPORTED)
+set(RAPIDJSON_BUILD_DOC OFF CACHE BOOL "" FORCE)
+set(RAPIDJSON_BUILD_EXAMPLES OFF CACHE BOOL "" FORCE)
+set(RAPIDJSON_BUILD_TESTS OFF CACHE BOOL "" FORCE)
+
+FetchContent_MakeAvailable(rapidjson)
 
 # add subdirs
 
 add_subdirectory(src)
+
+target_include_directories(discord-rpc PRIVATE
+    ${rapidjson_SOURCE_DIR}/include
+)
+
 if (BUILD_EXAMPLES)
     add_subdirectory(examples/send-presence)
 endif(BUILD_EXAMPLES)
